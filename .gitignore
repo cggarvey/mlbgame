@@ -59,3 +59,4 @@ target/
 
 # testing file
 test.py
+mlbgame/gameday-data/year_*/month_*/day_*/gid_*
