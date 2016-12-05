@@ -129,33 +129,33 @@ def write_to_file(text, file_path, gz=False):
     return
 
 
-def get_scoreboard(date):
+def get_scoreboard(game_date):
     """Return the game file for a certain day matching certain criteria."""
-    data = get_data(date, "scoreboard.xml", gz=True)
+    data = get_data(game_date, "scoreboard.xml", gz=True)
     return data
 
 
 def get_box_score(game_id):
     """Return the box score file of a game with matching id."""
     # get relevant information from game id
-    date = date_from_gameid(game_id)
-    data = get_data(date, "boxscore.xml", game_id)
+    game_date = date_from_gameid(game_id)
+    data = get_data(game_date, "boxscore.xml", game_id)
     return data
 
 
 def get_game_events(game_id):
     """Return the game events file of a game with matching id."""
     # get relevant information from game id
-    date = date_from_gameid(game_id)
-    data = get_data(date, "game_events.xml")
+    game_date = date_from_gameid(game_id)
+    data = get_data(game_date, "game_events.xml")
     return data
 
 
 def get_overview(game_id):
     """Return the linescore file of a game with matching id."""
     # get relevant information from game id
-    date = date_from_gameid(game_id)
-    data = get_data(date, "linescore.xml", game_id)
+    game_date = date_from_gameid(game_id)
+    data = get_data(game_date, "linescore.xml", game_id)
     return data
 
 
