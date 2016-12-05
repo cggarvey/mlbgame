@@ -9,6 +9,7 @@ import os
 import requests
 import gzip
 import lxml
+from lxml import etree
 import datetime
 
 
@@ -47,14 +48,14 @@ def get_data(date, file, gid=None, gz=False, no_cache=False):
 
     if os.path.isfile(file_path) and not no_cache:
         try:
-            parsed = lxml.etree.parse(file_path)
+            parsed = etree.parse(file_path)
         except lxml.etree.XMLSyntaxError:
             print("xml syntax error: {0}".format(file_path))
             return False
     else:
         url = _get_url(date, file, gid)
         try:
-            parsed = lxml.etree.parse(url)
+            parsed = etree.parse(url)
             cache_xml(parsed, date, file, gid, gz)
         except OSError:
             print("unable to fetch: {0}".format(url))
