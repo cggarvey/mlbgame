@@ -3,19 +3,12 @@
 from __future__ import print_function
 
 import mlbgame
-
+import dateutil.parser
 from datetime import date, timedelta
 import getopt
-import gzip
 import os
 import shutil
 import sys
-
-try:
-    from urllib.request import urlopen
-    from urllib.error import HTTPError
-except ImportError:
-    from urllib2 import urlopen, HTTPError
 
 
 def date_usage():
@@ -48,7 +41,7 @@ def process_overview(games):
     return i
 
 
-def run(hide=False, stats=False, events=False, overview=False, start=date(2012, 1, 12), end=None):
+def run(start, end, hide=False, stats=False, events=False, overview=False):
     """Update local game data."""
     # set end to be the day before today at maximum
     today = date.today()
@@ -134,7 +127,6 @@ def start():
         usage()
         sys.exit(2)
     hide = False
-    more = False
     stats = False
     events = False
     overview = False
@@ -161,16 +153,18 @@ def start():
             end = x[1]
     # verify that dates are acceptable
     try:
-        # split argument
-        split_start = start.split("-")
-        split_end = end.split("-")
-        # create example dates
-        date_start = date(int(split_start[2]), int(split_start[0]), int(split_start[1]))
-        date_end = date(int(split_end[2]), int(split_end[0]), int(split_end[1]))
+        first_date = date(2012, 1, 1)
+
+        # parse dates argument
+        date_start = dateutil.parser.parse(start).date()
+        date_start = max(first_date, date_start)  # ensure no date < 2012
+        date_end = dateutil.parser.parse(end).date()
+        date_end = min(today, date_end)  # ensure no date > today
     except:
         date_usage()
         sys.exit(2)
-    run(hide, stats, events, overview, date_start, date_end)
+
+    run(date_start, date_end, hide, stats, events, overview)
 
 
 # start program when run from command line
