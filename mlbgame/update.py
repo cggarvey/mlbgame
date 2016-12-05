@@ -18,12 +18,6 @@ except ImportError:
     from urllib2 import urlopen, HTTPError
 
 
-def access_error(name):
-    """Display error message when program cannot write to file."""
-    print('I do not have write access to "%s".' % (name))
-    print('Without write access, I cannot update the game database.')
-    sys.exit(1)
-
 def date_usage():
     """Display usage of dates."""
     print("Something was wrong with your date(s): Dates must be correct and\
