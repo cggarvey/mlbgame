@@ -24,6 +24,29 @@ def date_usage():
            in the format <MM-DD-YYYY>. End date cannot be before start date.")
 
 
+def process_stats(games):
+    # games is an mlbgame.day object
+    i = 0
+    for i, game in enumerate(games):
+        mlbgame.data.get_box_score(game.game_id)
+    return i
+
+
+def process_events(games):
+    # games is an mlbgame.day object
+    i = 0
+    for i, game in enumerate(games):
+        mlbgame.data.get_game_events(game.game_id)
+    return i
+
+
+def process_overview(games):
+    # games is an mlbgame.day object
+    i = 0
+    for i, game in enumerate(games):
+        mlbgame.data.get_overview(game.game_id)
+    return i
+
 
 def run(hide=False, stats=False, events=False, overview=False, start=date(2012, 1, 12), end=None):
     """Update local game data."""
@@ -36,168 +59,41 @@ def run(hide=False, stats=False, events=False, overview=False, start=date(2012, 
     if start > end:
         date_usage()
         sys.exit(2)
-    # print a message becuase sometimes it seems like the program is not doing anything
+
+    # print a message because sometimes it seems like the program is not doing anything
     if not hide:
         print("Checking local data...")
+
     # get information for loop
-    d = start
+    curr = start
     delta = timedelta(days=1)
     # calculate the days between the start and the end
     difference = float((end - start).days + .0)
     # loop through the dates
-    while d <= end:
-        i = d.year
-        x = d.month
-        y = d.day
-        monthstr = str(x).zfill(2)
-        daystr = str(y).zfill(2)
-        # file information
-        filename = "gameday-data/year_%i/month_%s/day_%s/scoreboard.xml.gz" % (i, monthstr, daystr)
-        f = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
-        dirn = "gameday-data/year_%i/month_%s/day_%s" % (i, monthstr, daystr)
-        dirname = os.path.join(os.path.dirname(os.path.abspath(__file__)), dirn)
-        # check if file exists
-        # aka is the data saved
-        if not os.path.isfile(f):
-            # try becuase some dates may not have a file on the mlb.com server
-            try:
-                # get data from url
-                data = urlopen("http://gd2.mlb.com/components/game/mlb/year_%i/month_%s/day_%s/scoreboard.xml" % (i, monthstr, daystr))
-                response = data.read()
-                # check if the path exists where the file should go
-                if not os.path.exists(dirname):
-                    try:
-                        # try to make the folder if permissions allow
-                        os.makedirs(dirname)
-                    except OSError:
-                        access_error(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
-                try:
-                    # try to create the file if permissions allow
-                    with gzip.open(f, "w") as fi:
-                        fi.write(response)
-                except OSError:
-                    access_error(dirname)
-            # do nothing if the file is not on mlb.com
-            except HTTPError:
-                pass
+    while curr <= end:
+        y, m, d = mlbgame.data.unpack_ymd(curr)
+
+        day = mlbgame.day(y, m, d)
+
         # get stats if specified
         if stats:
-            try:
-                # get the data for games on this day
-                games = mlbgame.day(i, x, y)
-                for z in games:
-                    # get the game id which is used to fetch data
-                    game_id = z.game_id
-                    # file information
-                    filename2 = "gameday-data/year_%i/month_%s/day_%s/gid_%s/boxscore.xml.gz" % (i, monthstr, daystr, game_id)
-                    f2 = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename2)
-                    dirn2 = "gameday-data/year_%i/month_%s/day_%s/gid_%s" % (i, monthstr, daystr, game_id)
-                    dirname2 = os.path.join(os.path.dirname(os.path.abspath(__file__)), dirn2)
-                    # check if file exists
-                    # aka is the information saved
-                    if not os.path.isfile(f2):
-                        # try because some dates may not have a file on the mlb.com server
-                        # or some months don't have a 31st day
-                        try:
-                            # get data
-                            data2 = urlopen("http://gd2.mlb.com/components/game/mlb/year_%i/month_%s/day_%s/gid_%s/boxscore.xml" % (i, monthstr, daystr, game_id))
-                            response2 = data2.read()
-                            # checking if files exist and writing new files
-                            if not os.path.exists(dirname2):
-                                try:
-                                    os.makedirs(dirname2)
-                                except OSError:
-                                    access_error(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
-                            # try to write file
-                            try:
-                                with gzip.open(f2, "w") as fi:
-                                    fi.write(response2)
-                            except OSError:
-                                access_error(dirname2)
-                        except HTTPError:
-                            pass
-            except:
-                pass
+            process_stats(day)
+
         # get events if specified
         if events:
-            try:
-                # get the data for games on this day
-                games = mlbgame.day(i, x, y)
-                for z in games:
-                    # get the game id which is used to fetch data
-                    game_id = z.game_id
-                    # file information
-                    filename3 = "gameday-data/year_%i/month_%s/day_%s/gid_%s/game_events.xml.gz" % (i, monthstr, daystr, game_id)
-                    f3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename3)
-                    dirn3 = "gameday-data/year_%i/month_%s/day_%s/gid_%s" % (i, monthstr, daystr, game_id)
-                    dirname3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), dirn3)
-                    if not os.path.isfile(f3):
-                        # try because some dates may not have a file on the mlb.com server
-                        # or some months don't have a 31st day
-                        try:
-                            # get data
-                            data3 = urlopen("http://gd2.mlb.com/components/game/mlb/year_%i/month_%s/day_%s/gid_%s/game_events.xml" % (i, monthstr, daystr, game_id))
-                            response3 = data3.read()
-                            # checking if files exist and writing new files
-                            if not os.path.exists(dirname3):
-                                try:
-                                    os.makedirs(dirname3)
-                                except OSError:
-                                    access_error(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
-                            # try to write file
-                            try:
-                                with gzip.open(f3, "w") as fi:
-                                    fi.write(response3)
-                            except OSError:
-                                access_error(dirname3)
-                        except HTTPError:
-                            pass
-            except:
-                pass
+            process_events(day)
+
         # get overview if specified
         if overview:
-            try:
-                # get the data for games on this day
-                games = mlbgame.day(i, x, y)
-                for z in games:
-                    # get the game id which is used to fetch data
-                    game_id = z.game_id
-                    # file information
-                    filename4 = "gameday-data/year_%i/month_%s/day_%s/gid_%s/linescore.xml.gz" % (i, monthstr, daystr, game_id)
-                    f4 = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename4)
-                    dirn4 = "gameday-data/year_%i/month_%s/day_%s/gid_%s" % (i, monthstr, daystr, game_id)
-                    dirname4 = os.path.join(os.path.dirname(os.path.abspath(__file__)), dirn4)
-                    # check if file exists
-                    # aka is the information saved
-                    if not os.path.isfile(f4):
-                        # try because some dates may not have a file on the mlb.com server
-                        # or some months don't have a 31st day
-                        try:
-                            # get data
-                            data4 = urlopen("http://gd2.mlb.com/components/game/mlb/year_%i/month_%s/day_%s/gid_%s/linescore.xml" % (i, monthstr, daystr, game_id))
-                            response4 = data4.read()
-                            # checking if files exist and writing new files
-                            if not os.path.exists(dirname4):
-                                try:
-                                    os.makedirs(dirname4)
-                                except OSError:
-                                    access_error(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
-                            # try to write file
-                            try:
-                                with gzip.open(f4, "w") as fi:
-                                    fi.write(response4)
-                            except OSError:
-                                access_error(dirname4)
-                        except HTTPError:
-                            pass
-            except:
-                pass
+            process_overview(day)
+
         # loading message to show something is actually happening
         if not hide:
-            sys.stdout.write('Loading games (%00.2f%%) \r' % ((1-((end - d).days/difference))*100))
+            pct = (1 - ((end - curr).days / difference)) * 100
+            sys.stdout.write('Loading games (%00.2f%%) \r' % (pct))
             sys.stdout.flush()
         # increment the date counter
-        d += delta
+        curr += delta
 
     if not hide:
         # make sure loading ends at 100%
