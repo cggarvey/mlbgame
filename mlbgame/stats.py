@@ -65,10 +65,10 @@ def team_stats(game_id):
         for y in x.attrib:
             stats[y] = x.attrib[y]
         # apply to correct team
-        if x.attrib['team_flag']=='home':
-            output['home_pitching']=stats
-        elif x.attrib['team_flag']=='away':
-            output['away_pitching']=stats
+        if x.attrib['team_flag'] == 'home':
+            output['home_pitching'] = stats
+        elif x.attrib['team_flag'] == 'away':
+            output['away_pitching'] = stats
     # loop through pitching info
     for x in batting:
         stats = {}
@@ -76,44 +76,52 @@ def team_stats(game_id):
         for y in x.attrib:
             stats[y] = x.attrib[y]
         # apply to correct team
-        if x.attrib['team_flag']=='home':
-            output['home_batting']=stats
-        elif x.attrib['team_flag']=='away':
-            output['away_batting']=stats
+        if x.attrib['team_flag'] == 'home':
+            output['home_batting'] = stats
+        elif x.attrib['team_flag'] == 'away':
+            output['away_batting'] = stats
     return output
+
 
 class PitcherStats(mlbgame.object.Object):
     """Holds stats information for a pitcher.
-    
+
     Check out `statmap.py` for a full list of object properties.
     """
 
     def nice_output(self):
         """Prints basic pitcher stats in a nice way."""
-        return "%s - %i Earned Runs, %i Strikouts, %i Hits" % (self.name_display_first_last, self.er, self.so, self.h)
-    
+        out = "{0} - {1} Earned Runs, {2} Strikouts, {3} Hits"
+        return out.format(self.name_display_first_last, self.er, self.so, self.h)
+
     def __str__(self):
         return self.nice_output()
 
+
 class BatterStats(mlbgame.object.Object):
     """Holds stats information for a batter.
-    
+
     Check out `statmap.py` for a full list of object properties.
     """
-    
+
     def nice_output(self):
         """Prints basic batter stats in a nice way."""
         if self.rbi > 0:
             if self.hr > 0:
                 # display home runs if he has any
-                return "%s - %i for %i with %i RBI and %i Home Runs" % (self.name_display_first_last, self.h, self.ab, self.rbi, self.hr)
+                out = "{0} - {1} for {2} with {3} RBI and {4} Home Runs"
+            else:
+                out = "{0} - {1} for {2} with {3} RBI"
             # display RBI if he has any but no HR
-            return "%s - %i for %i with %i RBI" % (self.name_display_first_last, self.h, self.ab, self.rbi)
         # display basic game stats
-        return "%s - %i for %i" % (self.name_display_first_last, self.h, self.ab)
-    
+        else:
+            out = "{0} - {1} for {2}"
+
+        return out % (self.name_display_first_last, self.h, self.ab, self.rbi, self.hr)
+
     def __str__(self):
         return self.nice_output()
+
 
 class TeamStats(mlbgame.object.Object):
     """Holds total pitching or batting stats for a team"""
