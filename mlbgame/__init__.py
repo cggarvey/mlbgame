@@ -155,7 +155,7 @@ import mlbgame.stats
 import mlbgame.version
 
 import calendar
-from datetime import date
+import datetime
 import sys
 
 VERSION = mlbgame.version.__version__
@@ -172,20 +172,22 @@ def day(year, month, day, home=None, away=None):
     if daysinmonth < day:
         return []
     # get data
-    data = mlbgame.game.scoreboard(year, month, day, home=home, away=away)
+    date = datetime.date(year, month, day)
+    data = mlbgame.game.scoreboard(date, home=home, away=away)
     results = [mlbgame.game.GameScoreboard(data[x]) for x in data]
     return results
 
+
 def games(years, months=None, days=None, home=None, away=None):
     """Return a list of lists of games for multiple days.
-    
+
     If home and away are the same team, it will return all games for that team.
     """
     # put in data if months and days are not specified
-    if months == None:
-        months = list(range(1,13))
-    if days == None:
-        days = list(range(1,32))
+    if not months:
+        months = list(range(1, 13))
+    if not days:
+        days = list(range(1, 32))
     results = []
     # check if lists, if not make lists
     # allows users to input either numbers or lists
