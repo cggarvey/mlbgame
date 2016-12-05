@@ -5,59 +5,45 @@
 import mlbgame.data
 import mlbgame.object
 
-import lxml.etree as etree
+
+def process_players(resource, batter=True):
+    home = list()
+    away = list()
+    b_or_p = 'batter' if batter else 'pitcher'
+    for row in resource:
+        # checks if home team
+        is_home = False
+        if row.attrib['team_flag'] == "home":
+            is_home = True
+        # loops through players
+        for x in row.findall(b_or_p):
+            stats = {i: x.attrib[i] for i in x.attrib}
+            # apply to correct list
+            if is_home:
+                home.append(stats)
+            else:
+                away.append(stats)
+    return home, away
+
 
 def player_stats(game_id):
     """Return dictionary of individual stats of a game with matching id."""
     # get data from data module
     data = mlbgame.data.get_box_score(game_id)
-    # parse XML
-    parsed = etree.parse(data)
-    root = parsed.getroot()
+
     # get pitching and batting info
-    pitching = root.findall('pitching')
-    batting = root.findall('batting')
-    # empty lists for output
-    home_pitching = []
-    away_pitching = []
-    home_batting = []
-    away_batting = []
-    # loop through pitching info
-    for y in pitching:
-        # checks if home team
-        home=False
-        if y.attrib['team_flag'] == "home":
-            home = True
-        # loops through pitchers
-        for x in y.findall('pitcher'):
-            stats = {}
-            # loop through and save stats
-            for i in x.attrib:
-                stats[i]=x.attrib[i]
-            # apply to correct list
-            if home:
-                home_pitching.append(stats)
-            elif not home:
-                away_pitching.append(stats)
-    # loop through batting info
-    for y in batting:
-        # checks if home team
-        home=False
-        if y.attrib['team_flag'] == "home":
-            home = True
-        # loops through batters
-        for x in y.findall('batter'):
-            stats = {}
-            # loop through and save stats
-            for i in x.attrib:
-                stats[i]=x.attrib[i]
-            # apply to correct list
-            if home:
-                home_batting.append(stats)
-            elif not home:
-                away_batting.append(stats)
+    pitching = data.findall('pitching')
+    batting = data.findall('batting')
+
+    # loop through and process
+    home_pitching, away_pitching = process_players(pitching, batter=False)
+    home_batting, away_batting = process_players(batting, batter=True)
+
     # put lists in dictionary for output
-    output = {'home_pitching':home_pitching, 'away_pitching':away_pitching, 'home_batting':home_batting, 'away_batting':away_batting}
+    output = {'home_pitching': home_pitching,
+              'away_pitching': away_pitching,
+              'home_batting': home_batting,
+              'away_batting': away_batting}
     return output
 
 def team_stats(game_id):
