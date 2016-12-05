@@ -209,6 +209,7 @@ def games(years, months=None, days=None, home=None, away=None):
                         results.append(game)
     return results
 
+
 def box_score(game_id):
     """Return box score for game matching the game id."""
     # get box score data
@@ -217,10 +218,12 @@ def box_score(game_id):
     obj = mlbgame.game.GameBoxScore(data)
     return obj
 
+
 def combine_games(games):
     """Combines games from multiple days into a single list."""
     output = [y for x in games for y in x]
     return output
+
 
 def player_stats(game_id):
     """Return dictionary of player stats for game matching the game id."""
@@ -238,24 +241,27 @@ def player_stats(game_id):
             output[y].append(obj)
     return output
 
+
 def team_stats(game_id):
     """Return dictionary of team stats for game matching the game id."""
     # get data
     data = mlbgame.stats.team_stats(game_id)
-    output = {x:mlbgame.stats.TeamStats(data[x]) for x in data}
+    output = {x: mlbgame.stats.TeamStats(data[x]) for x in data}
     return output
 
+
 def combine_stats(stats):
-    """Combines player stat objects from a game into a single list."""
+    """Combine player stat objects from a game into a single list."""
     output = [y for x in stats for y in stats[x]]
     return output
 
+
 def game_events(game_id):
     """Return dictionary of game events for game matching the game id.
-    
-    Top level of dictionary is inning of game. 
-    Next level is top or bottom of the inning. 
-    Final level is a list of at bats in that part of the inning. 
+
+    Top level of dictionary is inning of game.
+    Next level is top or bottom of the inning.
+    Final level is a list of at bats in that part of the inning.
     Lowest level is AtBat object.
     Ex. events['inningnumber']['top/bottom'][atbatnumber]
     """
@@ -269,15 +275,18 @@ def game_events(game_id):
                 output[x][y].append(mlbgame.events.AtBat(i))
     return output
 
+
 def overview(game_id):
     """Return Overview object that contains game information."""
     data = mlbgame.game.overview(game_id)
     return mlbgame.game.Overview(data)
 
+
 def league():
     """Return Info object that contains league information"""
     info = mlbgame.info.league_info()
     return mlbgame.info.Info(info)
+
 
 def teams():
     """Return list of Info objects for each team"""

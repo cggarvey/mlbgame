@@ -26,14 +26,18 @@ def access_error(name):
 
 def date_usage():
     """Display usage of dates."""
-    print("Something was wrong with your date(s): Dates must be correct and in the format <MM-DD-YYYY>. End date cannot be before start date.")
+    print("Something was wrong with your date(s): Dates must be correct and\
+           in the format <MM-DD-YYYY>. End date cannot be before start date.")
+
+
 
 def run(hide=False, stats=False, events=False, overview=False, start=date(2012, 1, 12), end=None):
     """Update local game data."""
     # set end to be the day before today at maximum
     today = date.today()
-    if end == None or end >= today:
-        end =  today - timedelta(days=1)
+    if end is None or end >= today:
+        end = today - timedelta(days=1)
+
     # check if the dates are in correct chronological order
     if start > end:
         date_usage()
@@ -208,16 +212,18 @@ def run(hide=False, stats=False, events=False, overview=False, start=date(2012, 
         # show finished message
         print("Complete.")
 
+
 def clear():
-    """Delete all cached data"""
+    """Delete all cached data."""
     try:
         shutil.rmtree(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
     except OSError:
         access_error(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
 
+
 def usage():
     """Display usage of command line arguments."""
-    print("usage: "+sys.argv[0]+" <arguments>")
+    print("usage: " + sys.argv[0] + " <arguments>")
     print()
     print("Arguments:")
     print("--help (-h)\t\t\tdisplay this help menu")
@@ -228,6 +234,7 @@ def usage():
     print("--overview\t\t\tsaves the game overview from every game")
     print("--start (-s) <MM-DD-YYYY>\tdate to start updating from (default: 01-01-2012)")
     print("--end (-e) <MM-DD-YYYY>\t\tdate to update until (default: current day)")
+
 
 def start():
     """Start updating from a command and arguments."""
@@ -274,7 +281,8 @@ def start():
         date_usage()
         sys.exit(2)
     run(hide, stats, events, overview, date_start, date_end)
-    
+
+
 # start program when run from command line
 if __name__ == "__main__":
     start()
