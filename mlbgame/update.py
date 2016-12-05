@@ -99,9 +99,9 @@ def run(start, end, hide=False, stats=False, events=False, overview=False):
 def clear():
     """Delete all cached data."""
     try:
-        shutil.rmtree(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
+        shutil.rmtree(mlbgame.data.ROOT_DIR)
     except OSError:
-        access_error(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gameday-data/'))
+        mlbgame.data.access_error(mlbgame.data.ROOT_DIR)
 
 
 def usage():
