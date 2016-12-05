@@ -7,7 +7,6 @@ about the (MLB) league and the teams in it.
 import mlbgame.data
 import mlbgame.object
 
-import lxml.etree as etree
 
 def get_league_object():
     """Return the xml object corresponding to the league.
@@ -15,7 +14,8 @@ def get_league_object():
     Only designed for internal use"""
     data = mlbgame.data.get_properties()
     # return league object
-    return etree.parse(data).getroot().find("leagues").find("league")
+    return data.find("leagues").find("league")
+
 
 def league_info():
     """Return a dictionary of league information."""

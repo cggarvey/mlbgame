@@ -46,16 +46,15 @@ def player_stats(game_id):
               'away_batting': away_batting}
     return output
 
+
 def team_stats(game_id):
     """Return team stats of a game with matching id."""
     # get data from data module
     data = mlbgame.data.get_box_score(game_id)
-    # parse XML
-    parsed = etree.parse(data)
-    root = parsed.getroot()
+
     # get pitching and batting ingo
-    pitching = root.findall('pitching')
-    batting = root.findall('batting')
+    pitching = data.findall('pitching')
+    batting = data.findall('batting')
     # dictionary for output
     output = {}
     # loop through pitching info
