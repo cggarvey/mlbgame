@@ -9,7 +9,7 @@ import datetime
 import pandas as pd
 
 
-def process_game(game):
+def process_scoreboard_game(game):
     o = {}  # output dictionary
     teams = game.findall('team')
     game_data = game.find('game')
@@ -33,14 +33,14 @@ def process_game(game):
 
     # specific processing based on the game's status
     if game.tag in ['ig_game', 'go_game']:
-        o.update(process_game_win_loss(game))
+        o.update(process_scoreboard_game_win_loss(game))
     else:
-        o.update(process_game_home_away(game))
+        o.update(process_scoreboard_game_home_away(game))
 
     return o
 
 
-def process_game_win_loss(game):
+def process_scoreboard_game_win_loss(game):
     # output dictionary. set up default values, then overwrite.
     o = {'w_pitcher': '',
          'w_pitcher_wins': 0,
@@ -71,8 +71,10 @@ def process_game_win_loss(game):
     except:
         pass
 
+    return o
 
-def process_game_home_away(game):
+
+def process_scoreboard_game_home_away(game):
     # output dictionary. set up default values, then overwrite.
     o = {'p_pitcher_home': '',
          'p_pitcher_home_wins': 0,
@@ -115,16 +117,15 @@ def make_games_filter(teams):
 def scoreboard(date, home=None, away=None):
     """Return the scoreboard information for games as a dictionary."""
     # get data
-    year, month, day = mlbgame.data.unpack_ymd(date)
     data = mlbgame.data.get_scoreboard(date)
-    games_filter = make_games_filter([home, away])
+    teams = [x for x in [home, away] if x]
+    games_filter = make_games_filter(teams)
     games_to_process = filter(games_filter, data)
 
     games = {}
     # loop through games
     for game in games_to_process:
-
-        output = process_game(game)
+        output = process_scoreboard_game(game)
         game_id = output['game_id']
         games[game_id] = output
 
