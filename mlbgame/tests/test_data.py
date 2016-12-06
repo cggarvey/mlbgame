@@ -6,6 +6,7 @@ import datetime
 import mlbgame.data
 
 
+mlbgame.data.ROOT_DIR = mlbgame.data.TEMP_DIR
 date = datetime.date(2016, 11, 2)
 
 

@@ -14,6 +14,7 @@ import datetime
 
 ROOT_URL = "http://gd2.mlb.com/components/game/mlb"
 ROOT_DIR = os.path.join(os.path.dirname(__file__), "gameday-data")
+TEMP_DIR = os.path.join(os.path.dirname(__file__), "temp")
 
 
 def access_error(name):
