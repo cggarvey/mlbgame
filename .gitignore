@@ -61,3 +61,4 @@ target/
 test.py
 mlbgame/gameday-data/year_*/month_*/day_*/gid_*
 mlbgame/temp
+mlbgame/cov_html

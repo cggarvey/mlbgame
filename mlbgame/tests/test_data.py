@@ -4,6 +4,7 @@ import lxml
 import pytest
 import datetime
 import mlbgame.data
+import shutil
 
 
 mlbgame.data.ROOT_DIR = mlbgame.data.TEMP_DIR
@@ -47,6 +48,12 @@ def test__get_url():
     assert url == 'http://gd2.mlb.com/components/game/mlb/year_2016/month_11/day_02/scoreboard.xml'
 
 
+def test__get_url_with_gid():
+    game_id = '2016_11_02_chnmlb_clemlb_1'
+    url = mlbgame.data._get_url(date, 'boxscore.xml', game_id)
+    assert url == 'http://gd2.mlb.com/components/game/mlb/year_2016/month_11/day_02/gid_2016_11_02_chnmlb_clemlb_1/boxscore.xml'
+
+
 def test__get_path():
     path = mlbgame.data._get_path(date, 'scoreboard.xml')
     assert path[-41:] == "/year_2016/month_11/day_02/scoreboard.xml"
@@ -78,4 +85,29 @@ def test_get_data_cache_gz():
     data = mlbgame.data.get_data(date, 'scoreboard.xml', gz=True)
     assert isinstance(data, lxml.etree._Element)
 
+
+def test_mkdir():
+    tmpdir = mlbgame.data.TEMP_DIR
+    path = os.path.join(tmpdir, 'test_directory')
+
+    if os.path.exists(path):
+        shutil.rmtree(path)
+
+    mlbgame.data.mkdir(path)
+    assert os.path.exists(path)
+
+
+def test_get_properties():
+    from lxml import etree
+    xml = mlbgame.data.get_properties()
+    et = etree.fromstring(xml.encode())
+    assert et.tag == 'mlb'
+
+    teams = []
+    for lg in et.findall('leagues')[0]:
+        for tms in lg.getchildren():
+            for tm in tms:
+                if tm.tag == 'team':
+                    teams.append(tm)
+    assert len(teams) == 30
 
