@@ -6,17 +6,16 @@ import mlbgame.data
 import mlbgame.object
 
 
-def process_players(resource, batter=True):
+def process_players(data, role):
     home = list()
     away = list()
-    b_or_p = 'batter' if batter else 'pitcher'
-    for row in resource:
+    for row in data:
         # checks if home team
         is_home = False
         if row.attrib['team_flag'] == "home":
             is_home = True
         # loops through players
-        for x in row.findall(b_or_p):
+        for x in row.findall(role):
             stats = {i: x.attrib[i] for i in x.attrib}
             # apply to correct list
             if is_home:
@@ -36,8 +35,8 @@ def player_stats(game_id):
     batting = data.findall('batting')
 
     # loop through and process
-    home_pitching, away_pitching = process_players(pitching, batter=False)
-    home_batting, away_batting = process_players(batting, batter=True)
+    home_pitching, away_pitching = process_players(pitching, 'pitcher')
+    home_batting, away_batting = process_players(batting, 'batter')
 
     # put lists in dictionary for output
     output = {'home_pitching': home_pitching,
@@ -47,38 +46,39 @@ def player_stats(game_id):
     return output
 
 
+def process_teams(data, role):
+    output = {}
+    records = data.findall(role)
+    home_key = 'home_{0}'.format(role)
+    away_key = 'away_{0}'.format(role)
+
+    for x in records:
+        stats = {}
+        # loop through stats and save
+        for y in x.attrib:
+            stats[y] = x.attrib[y]
+        # apply to correct team
+        if x.attrib['team_flag'] == 'home':
+            output[home_key] = stats
+        elif x.attrib['team_flag'] == 'away':
+            output[away_key] = stats
+    return output
+
+
 def team_stats(game_id):
     """Return team stats of a game with matching id."""
     # get data from data module
     data = mlbgame.data.get_box_score(game_id)
+    output = {}
 
     # get pitching and batting ingo
-    pitching = data.findall('pitching')
-    batting = data.findall('batting')
+    pitching = process_teams(data, 'pitching')
+    batting = process_teams(data, 'batting')
     # dictionary for output
-    output = {}
     # loop through pitching info
-    for x in pitching:
-        stats = {}
-        # loop through stats and save
-        for y in x.attrib:
-            stats[y] = x.attrib[y]
-        # apply to correct team
-        if x.attrib['team_flag'] == 'home':
-            output['home_pitching'] = stats
-        elif x.attrib['team_flag'] == 'away':
-            output['away_pitching'] = stats
-    # loop through pitching info
-    for x in batting:
-        stats = {}
-        # loop through stats and save
-        for y in x.attrib:
-            stats[y] = x.attrib[y]
-        # apply to correct team
-        if x.attrib['team_flag'] == 'home':
-            output['home_batting'] = stats
-        elif x.attrib['team_flag'] == 'away':
-            output['away_batting'] = stats
+    output.update(pitching)
+    output.update(batting)
+
     return output
 
 
