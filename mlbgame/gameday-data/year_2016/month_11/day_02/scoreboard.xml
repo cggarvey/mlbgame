@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Copyright 2016 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt-->
+<scoreboard date="20161102" last_modified="">
+   <go_game>
+      <game id="2016_11_02_chnmlb_clemlb_1" league="NA" status="FINAL" start_time="8:00PM"
+            home_code=""/>
+      <team name="Indians" code="">
+         <gameteam R="7" H="11" E="1"/>
+      </team>
+      <team name="Cubs" code="">
+         <gameteam R="8" H="13" E="3"/>
+      </team>
+      <w_pitcher wins="1" losses="0">
+         <pitcher name="A. Chapman"/>
+      </w_pitcher>
+      <l_pitcher wins="0" losses="1">
+         <pitcher name="B. Shaw"/>
+      </l_pitcher>
+      <sv_pitcher saves="1">
+         <pitcher name="M. Montgomery"/>
+      </sv_pitcher>
+   </go_game>
+</scoreboard>

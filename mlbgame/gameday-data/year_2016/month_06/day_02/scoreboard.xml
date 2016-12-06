@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<!--Copyright 2016 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt--><scoreboard date="20160602" last_modified="">
+   <go_game>
+      <game id="2016_06_02_sfnmlb_atlmlb_1" league="NN" status="FINAL" start_time="12:10PM" home_code=""/>
+      <team name="Braves" code="">
+         <gameteam R="0" H="4" E="1"/>
+      </team>
+      <team name="Giants" code="">
+         <gameteam R="6" H="8" E="1"/>
+      </team>
+      <w_pitcher wins="7" losses="2">
+         <pitcher name="M. Bumgarner"/>
+      </w_pitcher>
+      <l_pitcher wins="0" losses="4">
+         <pitcher name="A. Blair"/>
+      </l_pitcher>
+      <sv_pitcher saves="0">
+         <pitcher name=". "/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_arimlb_houmlb_1" league="NA" status="FINAL" start_time="2:10PM" home_code=""/>
+      <team name="Astros" code="">
+         <gameteam R="0" H="5" E="0"/>
+      </team>
+      <team name="D-backs" code="">
+         <gameteam R="3" H="7" E="1"/>
+      </team>
+      <w_pitcher wins="7" losses="3">
+         <pitcher name="Z. Greinke"/>
+      </w_pitcher>
+      <l_pitcher wins="3" losses="7">
+         <pitcher name="D. Keuchel"/>
+      </l_pitcher>
+      <sv_pitcher saves="10">
+         <pitcher name="B. Ziegler"/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_lanmlb_chnmlb_1" league="NN" status="FINAL" start_time="2:20PM" home_code=""/>
+      <team name="Cubs" code="">
+         <gameteam R="7" H="10" E="0"/>
+      </team>
+      <team name="Dodgers" code="">
+         <gameteam R="2" H="3" E="1"/>
+      </team>
+      <w_pitcher wins="4" losses="4">
+         <pitcher name="K. Hendricks"/>
+      </w_pitcher>
+      <l_pitcher wins="0" losses="1">
+         <pitcher name="J. Urias"/>
+      </l_pitcher>
+      <sv_pitcher saves="0">
+         <pitcher name=". "/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_bosmlb_balmlb_1" league="AA" status="FINAL" start_time="7:05PM" home_code=""/>
+      <team name="Orioles" code="">
+         <gameteam R="12" H="11" E="1"/>
+      </team>
+      <team name="Red Sox" code="">
+         <gameteam R="7" H="12" E="0"/>
+      </team>
+      <w_pitcher wins="4" losses="0">
+         <pitcher name="M. Givens"/>
+      </w_pitcher>
+      <l_pitcher wins="0" losses="1">
+         <pitcher name="R. Ross"/>
+      </l_pitcher>
+      <sv_pitcher saves="0">
+         <pitcher name=". "/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_milmlb_phimlb_1" league="NN" status="FINAL" start_time="7:05PM" home_code=""/>
+      <team name="Phillies" code="">
+         <gameteam R="1" H="5" E="0"/>
+      </team>
+      <team name="Brewers" code="">
+         <gameteam R="4" H="12" E="1"/>
+      </team>
+      <w_pitcher wins="3" losses="6">
+         <pitcher name="C. Anderson"/>
+      </w_pitcher>
+      <l_pitcher wins="2" losses="8">
+         <pitcher name="J. Eickhoff"/>
+      </l_pitcher>
+      <sv_pitcher saves="14">
+         <pitcher name="J. Jeffress"/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_kcamlb_clemlb_1" league="AA" status="FINAL" start_time="7:10PM" home_code=""/>
+      <team name="Indians" code="">
+         <gameteam R="5" H="11" E="1"/>
+      </team>
+      <team name="Royals" code="">
+         <gameteam R="4" H="12" E="3"/>
+      </team>
+      <w_pitcher wins="2" losses="1">
+         <pitcher name="T. Hunter"/>
+      </w_pitcher>
+      <l_pitcher wins="2" losses="2">
+         <pitcher name="J. Soria"/>
+      </l_pitcher>
+      <sv_pitcher saves="0">
+         <pitcher name=". "/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_pitmlb_miamlb_1" league="NN" status="FINAL" start_time="7:10PM" home_code=""/>
+      <team name="Marlins" code="">
+         <gameteam R="4" H="7" E="0"/>
+      </team>
+      <team name="Pirates" code="">
+         <gameteam R="3" H="4" E="1"/>
+      </team>
+      <w_pitcher wins="1" losses="0">
+         <pitcher name="N. Wittgren"/>
+      </w_pitcher>
+      <l_pitcher wins="1" losses="2">
+         <pitcher name="A. Schugel"/>
+      </l_pitcher>
+      <sv_pitcher saves="0">
+         <pitcher name=". "/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_nyamlb_detmlb_1" league="AA" status="FINAL" start_time="7:40PM" home_code=""/>
+      <team name="Tigers" code="">
+         <gameteam R="4" H="11" E="0"/>
+      </team>
+      <team name="Yankees" code="">
+         <gameteam R="5" H="8" E="1"/>
+      </team>
+      <w_pitcher wins="2" losses="2">
+         <pitcher name="D. Betances"/>
+      </w_pitcher>
+      <l_pitcher wins="0" losses="1">
+         <pitcher name="M. Boyd"/>
+      </l_pitcher>
+      <sv_pitcher saves="8">
+         <pitcher name="A. Chapman"/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_tbamlb_minmlb_1" league="AA" status="FINAL" start_time="8:10PM" home_code=""/>
+      <team name="Twins" code="">
+         <gameteam R="6" H="15" E="1"/>
+      </team>
+      <team name="Rays" code="">
+         <gameteam R="4" H="9" E="0"/>
+      </team>
+      <w_pitcher wins="1" losses="0">
+         <pitcher name="T. Rogers"/>
+      </w_pitcher>
+      <l_pitcher wins="6" losses="4">
+         <pitcher name="E. Ramirez"/>
+      </l_pitcher>
+      <sv_pitcher saves="7">
+         <pitcher name="K. Jepsen"/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_cinmlb_colmlb_1" league="NN" status="FINAL" start_time="8:40PM" home_code=""/>
+      <team name="Rockies" code="">
+         <gameteam R="4" H="5" E="1"/>
+      </team>
+      <team name="Reds" code="">
+         <gameteam R="11" H="14" E="0"/>
+      </team>
+      <w_pitcher wins="2" losses="5">
+         <pitcher name="A. Simon"/>
+      </w_pitcher>
+      <l_pitcher wins="2" losses="3">
+         <pitcher name="E. Butler"/>
+      </l_pitcher>
+      <sv_pitcher saves="0">
+         <pitcher name=". "/>
+      </sv_pitcher>
+   </go_game>
+   <go_game>
+      <game id="2016_06_02_seamlb_sdnmlb_1" league="AN" status="FINAL" start_time="9:10PM" home_code=""/>
+      <team name="Padres" code="">
+         <gameteam R="13" H="20" E="1"/>
+      </team>
+      <team name="Mariners" code="">
+         <gameteam R="16" H="16" E="1"/>
+      </team>
+      <w_pitcher wins="1" losses="0">
+         <pitcher name="C. Martin"/>
+      </w_pitcher>
+      <l_pitcher wins="0" losses="2">
+         <pitcher name="B. Maurer"/>
+      </l_pitcher>
+      <sv_pitcher saves="13">
+         <pitcher name="S. Cishek"/>
+      </sv_pitcher>
+   </go_game>
+</scoreboard>
