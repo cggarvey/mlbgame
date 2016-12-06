@@ -7,6 +7,27 @@ that occured throughout games.
 import mlbgame.data
 
 
+def process_inning_half(data, half):
+    output = []
+    # loop through the top half
+    atbats = data.findall(half)[0].findall('atbat')
+
+    for ab in atbats:
+        atbat = {}
+        # loop through and save info
+        for i in ab.attrib:
+            atbat[i] = ab.attrib[i]
+        atbat['pitches'] = []
+        for i in ab.findall('pitch'):
+            pitch = {}
+            # loop through pitch info
+            for n in i.attrib:
+                pitch[n] = i.attrib[n]
+            atbat['pitches'].append(pitch)
+        output.append(atbat)
+    return output
+
+
 def game_events(game_id):
     """Return dictionary of events for a game with matching id."""
     # get data from data module
@@ -15,42 +36,11 @@ def game_events(game_id):
     output = {}
     # loop through innings
     innings = data.findall('inning')
-    for x in innings:
+    for inning in innings:
         # top info
-        topinfo = []
-        # loop through the top half
-        top = x.findall('top')[0]
-        for y in top.findall('atbat'):
-            atbat = {}
-            # loop through and save info
-            for i in y.attrib:
-                atbat[i] = y.attrib[i]
-            atbat['pitches'] = []
-            for i in y.findall('pitch'):
-                pitch = {}
-                # loop through pitch info
-                for n in i.attrib:
-                    pitch[n] = i.attrib[n]
-                atbat['pitches'].append(pitch)
-            topinfo.append(atbat)
-        # bottom info
-        botinfo = []
-        # loop through the bottom half
-        bot = x.findall('bottom')[0]
-        for y in bot.findall('atbat'):
-            atbat = {}
-            # loop through and save info
-            for i in y.attrib:
-                atbat[i] = y.attrib[i]
-            atbat['pitches'] = []
-            for i in y.findall('pitch'):
-                pitch = {}
-                # loop through pitch info
-                for n in i.attrib:
-                    pitch[n] = i.attrib[n]
-                atbat['pitches'].append(pitch)
-            botinfo.append(atbat)
-        output[x.attrib['num']] = {'top': topinfo, 'bottom': botinfo}
+        topinfo = process_inning_half(inning, 'top')
+        botinfo = process_inning_half(inning, 'bottom')
+        output[inning.attrib['num']] = {'top': topinfo, 'bottom': botinfo}
     return output
 
 
