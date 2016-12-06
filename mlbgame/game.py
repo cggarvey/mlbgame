@@ -9,155 +9,125 @@ import datetime
 import pandas as pd
 
 
+def process_game(game):
+    o = {}  # output dictionary
+    teams = game.findall('team')
+    game_data = game.find('game')
+    home_team_data = teams[0].find('gameteam')
+    away_team_data = teams[1].find('gameteam')
+
+    # generic processing for all games regardless of game status (tag)
+    o['game_id'] = game_data.attrib['id']
+    o['game_type'] = game.tag
+    o['game_league'] = game_data.attrib['league']
+    o['game_status'] = game_data.attrib['status']
+    o['game_start_time'] = game_data.attrib['start_time']
+    o['home_team'] = teams[0].attrib['name']
+    o['home_team_runs'] = int(home_team_data.attrib['R'])
+    o['home_team_hits'] = int(home_team_data.attrib['H'])
+    o['home_team_errors'] = int(home_team_data.attrib['E'])
+    o['away_team'] = teams[1].attrib['name']
+    o['away_team_runs'] = int(away_team_data.attrib['R'])
+    o['away_team_hits'] = int(away_team_data.attrib['H'])
+    o['away_team_errors'] = int(away_team_data.attrib['E'])
+
+    # specific processing based on the game's status
+    if game.tag in ['ig_game', 'go_game']:
+        o.update(process_game_win_loss(game))
+    else:
+        o.update(process_game_home_away(game))
+
+    return o
+
+
+def process_game_win_loss(game):
+    # output dictionary. set up default values, then overwrite.
+    o = {'w_pitcher': '',
+         'w_pitcher_wins': 0,
+         'w_pitcher_losses': 0,
+         'l_pitcher': '',
+         'l_pitcher_wins': 0,
+         'l_pitcher_losses': 0,
+         'sv_pitcher': '',
+         'sv_pitcher_saves': 0}
+    try:
+        w_pitcher_data = game.find('w_pitcher')
+        o['w_pitcher'] = w_pitcher_data.find('pitcher').attrib['name']
+        o['w_pitcher_wins'] = int(w_pitcher_data.attrib['wins'])
+        o['w_pitcher_losses'] = int(w_pitcher_data.attrib['losses'])
+    except:
+        pass
+    try:
+        l_pitcher_data = game.find('l_pitcher')
+        o['l_pitcher'] = l_pitcher_data.find('pitcher').attrib['name']
+        o['l_pitcher_wins'] = int(l_pitcher_data.attrib['wins'])
+        o['l_pitcher_losses'] = int(l_pitcher_data.attrib['losses'])
+    except:
+        pass
+    try:
+        sv_pitcher_data = game.find('sv_pitcher')
+        o['sv_pitcher'] = sv_pitcher_data.find('pitcher').attrib['name']
+        o['sv_pitcher_saves'] = int(sv_pitcher_data.attrib['saves'])
+    except:
+        pass
+
+
+def process_game_home_away(game):
+    # output dictionary. set up default values, then overwrite.
+    o = {'p_pitcher_home': '',
+         'p_pitcher_home_wins': 0,
+         'p_pitcher_home_losses': 0,
+         'p_pitcher_away': '',
+         'p_pitcher_away_wins': 0,
+         'p_pitcher_away_losses': 0}
+    try:
+        p_pitcher_data = game.findall('p_pitcher')
+        p_pitcher_home_data = p_pitcher_data[0]
+        p_pitcher_away_data = p_pitcher_data[1]
+
+        o['p_pitcher_home'] = p_pitcher_home_data.find('pitcher').attrib['name']
+        o['p_pitcher_home_wins'] = int(p_pitcher_home_data.attrib['wins'])
+        o['p_pitcher_home_losses'] = int(p_pitcher_home_data.attrib['losses'])
+
+        o['p_pitcher_away'] = p_pitcher_away_data.find('pitcher').attrib['name']
+        o['p_pitcher_away_wins'] = int(p_pitcher_away_data.attrib['wins'])
+        o['p_pitcher_away_losses'] = int(p_pitcher_away_data.attrib['losses'])
+    except:
+        pass
+
+    return o
+
+
+def make_games_filter(teams):
+    """Create closure function to filter scoreboard to relevant games."""
+    def check_teams(x):
+        if len(teams) == 0:  # no teams specified so we don't check the teams
+            return True
+        tms = x.findall('team')
+        home = tms[0].attrib['name']
+        away = tms[1].attrib['name']
+
+        return len(set([home, away]).intersection(teams)) > 0
+
+    return check_teams
+
+
 def scoreboard(date, home=None, away=None):
     """Return the scoreboard information for games as a dictionary."""
     # get data
     year, month, day = mlbgame.data.unpack_ymd(date)
     data = mlbgame.data.get_scoreboard(date)
-    data = data.getroot()
-
-    go_games = [x for x in data if x.tag in ['go_game', 'ig_game']]
-    sg_games = [x for x in data if x.tag in ['sg_game']]
+    games_filter = make_games_filter([home, away])
+    games_to_process = filter(games_filter, data)
 
     games = {}
     # loop through games
-    for game in go_games:
+    for game in games_to_process:
 
-        # get team names
-        teams = game.findall('team')
-        home_name = teams[0].attrib['name']
-        away_name = teams[1].attrib['name']
-        # check if teams match parameters
-        if (home_name == home and home != None) or (away_name == away and away != None) or (away == None and home == None):
-            # throw all the data into a complicated dictionary
-            game_type = "go_game"
-            game_data = game.find('game')
-            game_id = game_data.attrib['id']
-            game_league = game_data.attrib['league']
-            game_status = game_data.attrib['status']
-            game_start_time = game_data.attrib['start_time']
-            home_team_data = teams[0].find('gameteam')
-            home_team = home_name
-            home_team_runs = int(home_team_data.attrib['R'])
-            home_team_hits = int(home_team_data.attrib['H'])
-            home_team_errors = int(home_team_data.attrib['E'])
-            away_team_data = teams[1].find('gameteam')
-            away_team = away_name
-            away_team_runs = int(away_team_data.attrib['R'])
-            away_team_hits = int(away_team_data.attrib['H'])
-            away_team_errors = int(away_team_data.attrib['E'])
-            try:
-                w_pitcher_data = game.find('w_pitcher')
-                w_pitcher = w_pitcher_data.find('pitcher').attrib['name']
-                w_pitcher_wins = int(w_pitcher_data.attrib['wins'])
-                w_pitcher_losses = int(w_pitcher_data.attrib['losses'])
-            except:
-                w_pitcher = ""
-                w_pitcher_wins = 0
-                w_pitcher_losses = 0
-            try:
-                l_pitcher_data = game.find('l_pitcher')
-                l_pitcher = l_pitcher_data.find('pitcher').attrib['name']
-                l_pitcher_wins = int(l_pitcher_data.attrib['wins'])
-                l_pitcher_losses = int(l_pitcher_data.attrib['losses'])
-            except:
-                l_pitcher = ""
-                l_pitcher_wins = 0
-                l_pitcher_losses = 0
-            try:
-                sv_pitcher_data = game.find('sv_pitcher')
-                sv_pitcher = sv_pitcher_data.find('pitcher').attrib['name']
-                sv_pitcher_saves = int(sv_pitcher_data.attrib['saves'])
-            except:
-                sv_pitcher = ""
-                sv_pitcher_saves = 0
-            output = {'game_id': game_id,
-                      'game_type': game_type,
-                      'game_league': game_league,
-                      'game_status': game_status,
-                      'game_start_time': game_start_time,
-                      'home_team': home_team,
-                      'home_team_runs': home_team_runs,
-                      'home_team_hits': home_team_hits,
-                      'home_team_errors': home_team_errors,
-                      'away_team': away_team,
-                      'away_team_runs': away_team_runs,
-                      'away_team_hits': away_team_hits,
-                      'away_team_errors': away_team_errors,
-                      'w_pitcher': w_pitcher,
-                      'w_pitcher_wins': w_pitcher_wins,
-                      'w_pitcher_losses': w_pitcher_losses,
-                      'l_pitcher': l_pitcher,
-                      'l_pitcher_wins': l_pitcher_wins,
-                      'l_pitcher_losses': l_pitcher_losses,
-                      'sv_pitcher': sv_pitcher,
-                      'sv_pitcher_saves': sv_pitcher_saves}
-            # put this dictionary into the larger dictionary
-            games[game_id] = output
-    # games that were not played
-    for game in sg_games:
-        # get team information
-        teams = game.findall('team')
-        home_name = teams[0].attrib['name']
-        away_name = teams[1].attrib['name']
-        # check if teams match parameters
-        if (home_name == home and home != None) or (away_name == away and away != None) or (away == None and home == None):
-            # throw all the data into a complicated dictionary
-            game_type = "sg_game"
-            game_data = game.find('game')
-            game_id = game_data.attrib['id']
-            game_league = game_data.attrib['league']
-            game_status = game_data.attrib['status']
-            game_start_time = game_data.attrib['start_time']
-            teams = game.findall('team')
-            home_team_data = teams[0].find('gameteam')
-            home_team = home_name
-            home_team_runs = int(home_team_data.attrib['R'])
-            home_team_hits = int(home_team_data.attrib['H'])
-            home_team_errors = int(home_team_data.attrib['E'])
-            away_team_data = teams[1].find('gameteam')
-            away_team = away_name
-            away_team_runs = int(away_team_data.attrib['R'])
-            away_team_hits = int(away_team_data.attrib['H'])
-            away_team_errors = int(away_team_data.attrib['E'])
-            try:
-                p_pitcher_data = game.findall('p_pitcher')
-                p_pitcher_home_data = p_pitcher_data[0]
-                p_pitcher_home = p_pitcher_home_data.find('pitcher').attrib['name']
-                p_pitcher_home_wins = int(p_pitcher_home_data.attrib['wins'])
-                p_pitcher_home_losses = int(p_pitcher_home_data.attrib['losses'])
-                p_pitcher_away_data = p_pitcher_data[1]
-                p_pitcher_away = p_pitcher_away_data.find('pitcher').attrib['name']
-                p_pitcher_away_wins = int(p_pitcher_away_data.attrib['wins'])
-                p_pitcher_away_losses = int(p_pitcher_away_data.attrib['losses'])
-            except:
-                p_pitcher_home = ""
-                p_pitcher_home_wins = 0
-                p_pitcher_home_losses = 0
-                p_pitcher_away = ""
-                p_pitcher_away_wins = 0
-                p_pitcher_away_losses = 0
-            output = {'game_id': game_id,
-                      'game_type': game_type,
-                      'game_league': game_league,
-                      'game_status': game_status,
-                      'game_start_time': game_start_time,
-                      'home_team': home_team,
-                      'home_team_runs': home_team_runs,
-                      'home_team_hits': home_team_hits,
-                      'home_team_errors': home_team_errors,
-                      'away_team': away_team,
-                      'away_team_runs': away_team_runs,
-                      'away_team_hits': away_team_hits,
-                      'away_team_errors': away_team_errors,
-                      'p_pitcher_home': p_pitcher_home,
-                      'p_pitcher_home_wins': p_pitcher_home_wins,
-                      'p_pitcher_home_losses': p_pitcher_home_losses,
-                      'p_pitcher_away': p_pitcher_away,
-                      'p_pitcher_away_wins': p_pitcher_away_wins,
-                      'p_pitcher_away_losses': p_pitcher_away_losses}
-            # put this dictionary into the larger dictionary
-            games[game_id] = output
+        output = process_game(game)
+        game_id = output['game_id']
+        games[game_id] = output
+
     return games
 
 
