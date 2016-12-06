@@ -196,10 +196,13 @@ def get_overview(game_id, gz=False, no_cache=False):
 
 def get_properties():
     """Return the current mlb properties file."""
-    try:
-        return requests.get("http://mlb.mlb.com/properties/mlb_properties.xml")
-    # in case mlb.com depricates this functionality
-    except requests.HTTPError:
+    response = requests.get("http://mlb.mlb.com/properties/mlb_properties.xml")
+
+    if response.status_code == requests.codes.ok:
+        # if we get a 200 response, return the text.
+        return response.text
+    else:
+        # in case mlb.com depricates this functionality
         raise ValueError("Could not find the properties file. mlb.com does not\
                           provide the file that mlbgame needs to perform this\
                           operation.")
