@@ -6,7 +6,6 @@ such as the scoreboard and the box score.
 
 import mlbgame.data
 import datetime
-import pandas as pd
 
 
 def process_scoreboard_game(game):
@@ -261,15 +260,6 @@ class GameBoxScore(object):
             else:
                 output += str(x) + " "
         return output
-
-    @property
-    def df(self):
-        df = pd.DataFrame(self.data)
-        df.index = [self.away, self.home]
-        ht = df.loc[self.home].apply(lambda x: 0 if x == 'x' else int(x)).sum()
-        at = df.loc[self.away].apply(lambda x: 0 if x == 'x' else int(x)).sum()
-        df['R'] = [at, ht]
-        return df
 
 
 def overview(game_id):

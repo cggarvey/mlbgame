@@ -32,7 +32,7 @@ def test_league_info(league_info):
 
 def test_team_info(team_info):
     assert isinstance(team_info, list)
-    assert len(team_info) >= 30
+    assert len(team_info) == 30
 
 
 def test_info_init_setattr(dbacks):
