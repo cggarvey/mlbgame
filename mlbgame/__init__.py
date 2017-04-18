@@ -152,18 +152,21 @@ import mlbgame.events
 import mlbgame.game
 import mlbgame.info
 import mlbgame.stats
+import mlbgame.statmap
 import mlbgame.version
 
 import calendar
+import itertools
 import datetime
 import sys
 
 VERSION = mlbgame.version.__version__
 """Installed version of mlbgame."""
 
+
 def day(year, month, day, home=None, away=None):
     """Return a list of games for a certain day.
-    
+
     If the home and away team are the same, it will return the game(s) for that team.
     """
     # get the days per month
@@ -197,16 +200,14 @@ def games(years, months=None, days=None, home=None, away=None):
         months = [months]
     if not isinstance(days, list):
         days = [days]
-    for i in years:
-        for y in months:
-            # get the days in a month
-            daysinmonth = calendar.monthrange(i, y)[1]
-            for x in days:
-                if daysinmonth >= x:
-                    # use the day function to get data for each day in range
-                    game = day(i, y, x, home=home, away=away)
-                    if game != []:
-                        results.append(game)
+
+    for y, m, d in itertools.product(years, months, days):
+        # use the day function to get data for each day in range
+        print(y, m, d)
+        game = day(y, m, d, home, away)
+        if game != []:
+            results.append(game)
+
     return results
 
 

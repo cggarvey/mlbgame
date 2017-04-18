@@ -57,8 +57,6 @@ docs/_build/
 # PyBuilder
 target/
 
-# testing file
-test.py
 mlbgame/gameday-data/year_*/month_*/day_*/gid_*
-mlbgame/temp
+# testing/coverage files
 mlbgame/cov_html

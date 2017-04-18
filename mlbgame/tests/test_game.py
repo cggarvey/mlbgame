@@ -47,6 +47,14 @@ def test_make_games_filter_noresults(xml_scoreboard):
     assert len(list(filtered)) == 0
 
 
+def test_make_games_filter_nogames():
+    scoreboard = mlbgame.data.get_scoreboard(datetime.date(2016, 10, 12))
+    teams = ['Reds', 'Reds']
+    games_filter = mlbgame.game.make_games_filter(teams)
+    filtered = filter(games_filter, scoreboard)
+    assert len(list(filtered)) == 0
+
+
 def test_scoreboard(scoreboard):
     sb = scoreboard['2016_11_02_chnmlb_clemlb_1']
 

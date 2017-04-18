@@ -6,10 +6,10 @@ import mlbgame.data
 import mlbgame.object
 
 
-def process_players(data, role):
+def process_players(boxscore_players, role):
     home = list()
     away = list()
-    for row in data:
+    for row in boxscore_players:
         # checks if home team
         is_home = False
         if row.attrib['team_flag'] == "home":
@@ -46,9 +46,9 @@ def player_stats(game_id):
     return output
 
 
-def process_teams(data, role):
+def process_teams(boxscore_teams, role):
     output = {}
-    records = data.findall(role)
+    records = boxscore_teams.findall(role)
     home_key = 'home_{0}'.format(role)
     away_key = 'away_{0}'.format(role)
 

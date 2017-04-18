@@ -102,9 +102,15 @@ def process_scoreboard_game_home_away(game):
 def make_games_filter(teams):
     """Create closure function to filter scoreboard to relevant games."""
     def check_teams(x):
+
         if len(teams) == 0:  # no teams specified so we don't check the teams
             return True
+        
         tms = x.findall('team')
+
+        if len(tms) == 0:
+            return False
+
         home = tms[0].attrib['name']
         away = tms[1].attrib['name']
 
